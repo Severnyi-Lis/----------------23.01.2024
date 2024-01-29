@@ -1,13 +1,3 @@
-/**Создайте класс
-Машина
-Пусть у неё будет цвет, колёса и скорость.
-Запретите редактирование этих свойств.
-Напишите функцию покрасить, меняющую цвет машины на выбранный вами.
-Напишите функцию "сменить колёса", которые меняют колёса на зимние и обратно.
-Сделайте на сайте кнопки "показать машину", "сменить колёса", "покрасить", которая рисует 4 дива.
-Нижние два - круглые и чёрные - колёса.
-Верхний и средний длинный - тело машины. (кому не лень, сделайте окна).
-Бордер точечками - зимние колёса. */
 class Car {
     ////    #color; ????
     #wheels;
@@ -38,6 +28,12 @@ class Car {
         this.#roof.changeColor(color);
         this.#kuzov.changeColor(color);
     }
+    changeWheels(iswinter){
+        for(var w of this.#wheels){
+            //w- одно колесо,цикл переберет их все
+            w.change(iswinter);
+        }
+    }
     render () {
         // А у второй собачки 2, а у 25-ой 25...
         // Сборка машины
@@ -53,15 +49,26 @@ class Car {
 
 class Wheel {
     #num = 0;
+    #div;
     constructor(num) {
         this.#num = num;
+        this.#div = document.createElement('div');
     }
     render() {
-        var wheel = document.createElement('div');  // колёсико
+        var wheel=this.#div;
         wheel.setAttribute('class', 'wheel');
         wheel.setAttribute('id', 'w' + this.#num);
         wheel.style.left = (80 * this.#num) + 'px';
+        wheel.style.zIndex = (-1) ** this.#num;
         return wheel;
+    }
+    change(iswinter){
+        this.#div.style.borderStyle='dotted';
+        if(iswinter){
+            this.#div.style.borderColor='white';
+        }else{
+        this.#div.style.borderColor='black';
+        }
     }
 };
 
@@ -87,7 +94,7 @@ class Kuzov {
         this.#div = document.createElement('div');
         this.#div.style.backgroundColor = color;
     }
-    changeColor(color){
+    changeColor(color) {
         this.#div.style.backgroundColor = color;
     }
     render() {
@@ -102,7 +109,17 @@ window.addEventListener(
     () => {
         var c = new Car("#80ffb9", 5, 90);
         // прицепить на страничку
-        //c.changeColor('red');
         document.body.appendChild(c.render());
+        //border: 6px dotted white;
+        document.forms.car_param.color1.addEventListener(
+            'change',
+            () => {
+                c.changeColor(
+                    document.forms.car_param.color1.value
+                );
+                c.changeWheels(true);
+            }
+        );
+
     }
 );
